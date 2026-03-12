@@ -1,0 +1,173 @@
+body {
+    background-color: #f8f9fa;
+    padding-bottom: 2rem;
+    overflow-x: hidden; /* Evita scroll horizontal en móviles */
+}
+
+.header-bar {
+    background-color: #078007;
+    color: white;
+    padding: 0.8rem 0;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-bar h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.2rem;
+}
+
+.header-bar p {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+.list-container {
+    background-color: white;
+    border-radius: 12px;
+    padding: 0.8rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+    overflow-x: hidden;
+}
+
+.category-title {
+    background-color: #e9f2ec;
+    color: #127712;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    margin-top: 1.2rem;
+    margin-bottom: 0.5rem;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    border-left: 6px solid #127a1b;
+}
+
+.product-row {
+    border-bottom: 1px dashed #dee2e6;
+    padding: 0.15rem 0; /* Aún más comprimido */
+    align-items: center;
+    transition: background-color 0.1s;
+    margin-left: 0; /* Asegura que el row de Bootstrap no se desborde */
+    margin-right: 0;
+    width: 100%;
+}
+
+.product-row:hover {
+    background-color: #f1f9f4;
+}
+
+.product-number {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.85rem;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.product-name {
+    font-size: 0.85rem;
+    line-height: 1.1;
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+}
+
+/* Estilo para inputs numéricos sin flechas y con teclado numérico en móviles */
+.value-input {
+    max-width: 100%; /* Ajuste a la anchura del contenedor sin desbordar */
+    width: 50px;
+    border-radius: 12px;
+    border: 1px solid #ced4da;
+    padding: 0.1rem 0.3rem; /* Menor relleno interior */
+    font-size: 0.85rem;
+    text-align: right;
+    background-color: #fffbf0;
+    -moz-appearance: textfield;
+    /* Firefox: elimina flechas */
+    appearance: textfield;
+    /* Chrome/Safari: elimina flechas por defecto */
+}
+
+.value-input::-webkit-outer-spin-button,
+.value-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.value-input:focus {
+    border-color: #0a7418;
+    box-shadow: 0 0 0 0.2rem rgba(17, 77, 20, 0.25);
+    outline: none;
+}
+
+.btn-download {
+    background-color: #0b7a11;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 0.4rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 0 0.3rem; /* Spacing between buttons in the group */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: 0.2s;
+}
+
+.btn-download:hover {
+    background-color: #1e5f38;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-reset {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 0.4rem 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-reset:hover {
+    background-color: #5a6268;
+}
+
+footer {
+    margin-top: 1.5rem;
+    color: #6c757d;
+    font-size: 0.75rem;
+    padding: 0 1rem;
+    line-height: 1.3;
+}
+
+/* Diseño a 3 columnas para computadores (pantallas grandes) */
+@media (min-width: 992px) {
+    #productList {
+        column-count: 3;
+        column-gap: 3rem;
+    }
+    
+    .category-title {
+        break-after: avoid;
+        page-break-after: avoid;
+        break-inside: avoid;
+        margin-top: 1rem; /* un poco menos de margen superior para ajustar mejor */
+    }
+    
+    .product-row {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}
+
+/* Extra safety for very small phones */
+@media (max-width: 400px) {
+    .product-name {
+        font-size: 0.8rem;
+    }
+    .value-input {
+        width: 45px;
+        font-size: 0.8rem;
+    }
+}

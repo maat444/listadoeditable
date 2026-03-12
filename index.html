@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRUREINA ANAPOIMA · Listado oficial</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <div class="header-bar text-center">
+        <div class="container">
+            <h1 class="display-6">🍎 FRUREINA ANAPOIMA 🥕</h1>
+            <p class="lead">Listado oficial #<span id="lista-numero">1</span></p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="d-flex flex-column mb-3 text-center align-items-center">
+            <p class="mb-2 text-muted fw-bold" style="font-size: 0.9rem;">Descargar el listado en formato:</p>
+            <div class="btn-group mb-2">
+                <button class="btn btn-download px-4" id="downloadTxtBtn">📄 .TXT</button>
+                <button class="btn btn-download px-4" id="downloadPdfBtn">📑 .PDF</button>
+            </div>
+            <button class="btn btn-download mb-2 w-auto px-4" id="downloadMobileBtn" style="background-color: #127a1b;">📱 Descargar para celulares</button>
+            <button class="btn btn-reset mt-1" id="resetBtn">⟲ Limpiar todos los campos</button>
+        </div>
+
+        <div class="list-container" id="productList">
+            <!-- Se llena dinámicamente con JavaScript -->
+        </div>
+
+        <footer class="text-center">
+            <p>Haz clic en cualquier campo para editar (teclado numérico en móviles).<br>
+            Los valores se guardan automáticamente. El PDF se genera en 3 columnas con fuente 7pt.</p>
+        </footer>
+    </div>
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Bootstrap JS (opcional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Nuestro script -->
+    <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+count.js
+node_modules
+.DS_Store
+*.tmp
+/tmp
+.gemini
+ brain/
