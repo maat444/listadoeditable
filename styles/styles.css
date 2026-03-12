@@ -74,7 +74,7 @@ body {
 /* Estilo para inputs numéricos sin flechas y con teclado numérico en móviles */
 .value-input {
     max-width: 100%; /* Ajuste a la anchura del contenedor sin desbordar */
-    width: 50px;
+    width: 90px;
     border-radius: 12px;
     border: 1px solid #ced4da;
     padding: 0.1rem 0.3rem; /* Menor relleno interior */
@@ -167,7 +167,7 @@ footer {
         font-size: 0.8rem;
     }
     .value-input {
-        width: 45px;
+        width: 80px;
         font-size: 0.8rem;
     }
 }

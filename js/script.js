@@ -234,8 +234,8 @@ function renderList() {
         html += `
             <div class="row product-row" data-number="${prod.number}">
                 <div class="col-2 col-sm-1 product-number">${prod.number}.</div>
-                <div class="col-7 col-sm-8 product-name">${prod.name}</div>
-                <div class="col-3 col-sm-3 text-end">
+                <div class="col-6 col-sm-7 product-name">${prod.name}</div>
+                <div class="col-4 col-sm-4 text-end">
                     <input type="number" step="any" class="value-input" id="input-${prod.number}" placeholder="0" value="${getStoredValue(prod.number)}">
                 </div>
             </div>
@@ -308,7 +308,7 @@ function generateTextLinesArray() {
 function downloadTxt() {
     const lines = generateTextLinesArray();
     const numRows = Math.ceil(lines.length / 3);
-    const textOutput = [];
+    const textOutput = ["listado Frureina Anapoima", ""];
     
     for (let row = 0; row < numRows; row++) {
         let rowStr = '';
@@ -338,7 +338,7 @@ function downloadTxt() {
 // DESCARGAR PARA CELULARES (TXT en una sola columna vertical para compatibilidad universal)
 function downloadMobileFormat() {
     const lines = generateTextLinesArray();
-    const textOutput = lines.map(item => item.text);
+    const textOutput = ["listado Frureina Anapoima", "", ...lines.map(item => item.text)];
     
     const content = textOutput.join('\n');
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -367,9 +367,14 @@ function downloadPdf() {
     const marginLeft = 10;
     const colWidth = (pageWidth - 2 * marginLeft) / 3;
     
-    // Iniciar y = 15. Usaremos un espaciado reducido para asegurar que todos quepan en 1 hoja.
-    // 297 - 20 (márgenes) = 277mm para 64 filas => ~4.3mm cada fila.
-    const startY = 15;
+    // Título
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text("listado Frureina Anapoima", marginLeft, 10);
+
+    // Iniciar y = 18. Usaremos un espaciado reducido para asegurar que todos quepan en 1 hoja.
+    // 297 - 25 (márgenes) = 272mm para 64 filas => ~4.2mm cada fila.
+    const startY = 18;
     const lineHeight = 4.2; 
     
     doc.setFontSize(7);
