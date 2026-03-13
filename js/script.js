@@ -313,33 +313,16 @@ function generateTextLinesArray() {
     return lines;
 }
 
-// DESCARGAR COMO TXT (Distribuido en 2 columnas para móviles, orden numérico preservado)
-function downloadTxt() {
+// DESCARGAR PARA CELULARES (TXT en una sola columna vertical)
+function downloadMobileFormat() {
     const lines = generateTextLinesArray();
     const dateStr = getFormattedDate();
-    const numRows = Math.ceil(lines.length / 2);
-    const textOutput = ["listado Frureina Anapoima", `Fecha: ${dateStr}`, ""];
+    const textOutput = ["listado Frureina Anapoima", `Fecha: ${dateStr}`, "", ...lines.map(item => item.text)];
     
-    for (let row = 0; row < numRows; row++) {
-        let rowStr = '';
-        for (let col = 0; col < 2; col++) {
-            const idx = col * numRows + row;
-            if (idx < lines.length) {
-                let text = lines[idx].text;
-                if (col < 1) {
-                    rowStr += text.padEnd(50, ' ');
-                } else {
-                    rowStr += text;
-                }
-            }
-        }
-        textOutput.push(rowStr);
-    }
-    
-    const content = textOutput.join('\r\n'); // \r\n para mejor compatibilidad con Notepad
+    const content = textOutput.join('\r\n');
     const bom = new Uint8Array([0xEF, 0xBB, 0xBF]); // UTF-8 BOM
     const blob = new Blob([bom, content], { type: 'text/plain;charset=utf-8' });
-    triggerDownload(blob, 'lista_productos.txt');
+    triggerDownload(blob, `lista_frureina_${dateStr.replace(/\//g, '-')}.txt`);
 }
 
 // Generar una descarga robusta para móviles
@@ -355,17 +338,8 @@ function triggerDownload(blob, filename) {
     }, 100);
 }
 
-// DESCARGAR PARA CELULARES (TXT en una sola columna vertical)
-function downloadMobileFormat() {
-    const lines = generateTextLinesArray();
-    const dateStr = getFormattedDate();
-    const textOutput = ["listado Frureina Anapoima", `Fecha: ${dateStr}`, "", ...lines.map(item => item.text)];
-    
-    const content = textOutput.join('\r\n');
-    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]); // UTF-8 BOM
-    const blob = new Blob([bom, content], { type: 'text/plain;charset=utf-8' });
-    triggerDownload(blob, 'lista_celular.txt');
-}
+// La función downloadMobileFormat ya es la principal para TXT.
+// No se requiere downloadTxt duplicado.
 
 // DESCARGAR COMO PDF (usando jsPDF en una sola hoja, 3 columnas completas)
 function downloadPdf() {
@@ -415,7 +389,8 @@ function downloadPdf() {
         }
     }
 
-    doc.save(`lista_frureina_${dateStr.replace(/\//g, '-')}.pdf`);
+    const pdfBlob = doc.output('blob');
+    triggerDownload(pdfBlob, `lista_frureina_${dateStr.replace(/\//g, '-')}.pdf`);
 }
 
 // -----------------------------------------------------------------
@@ -426,9 +401,13 @@ renderList();
 attachInputListeners();
 
 // botones
-document.getElementById('downloadTxtBtn').addEventListener('click', downloadTxt);
-document.getElementById('downloadPdfBtn').addEventListener('click', downloadPdf);
-document.getElementById('downloadMobileBtn').addEventListener('click', downloadMobileFormat);
-document.getElementById('resetBtn').addEventListener('click', resetAllInputs);
+const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+if (downloadPdfBtn) downloadPdfBtn.addEventListener('click', downloadPdf);
+
+const downloadMobileBtn = document.getElementById('downloadMobileBtn');
+if (downloadMobileBtn) downloadMobileBtn.addEventListener('click', downloadMobileFormat);
+
+const resetBtn = document.getElementById('resetBtn');
+if (resetBtn) resetBtn.addEventListener('click', resetAllInputs);
 
 })();
