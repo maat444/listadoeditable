@@ -200,6 +200,15 @@ const products = [
 // contenedor donde se renderiza la lista
 const container = document.getElementById('productList');
 
+// obtener fecha formateada DD/MM/YYYY
+function getFormattedDate() {
+    const d = new Date();
+    const day = d.getDate().toString().padStart(2, '0');
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
 // ---------- CONTADOR DIARIO ----------
 function updateDailyCounter() {
     // Fecha base: 12 de marzo de 2026 (día de inicio en GitHub Pages como #001)
@@ -236,7 +245,7 @@ function renderList() {
                 <div class="col-2 col-sm-1 product-number">${prod.number}.</div>
                 <div class="col-6 col-sm-7 product-name">${prod.name}</div>
                 <div class="col-4 col-sm-4 text-end">
-                    <input type="number" step="any" class="value-input" id="input-${prod.number}" placeholder="0" value="${getStoredValue(prod.number)}">
+                    <input type="text" class="value-input" id="input-${prod.number}" placeholder="0" value="${getStoredValue(prod.number)}">
                 </div>
             </div>
         `;
@@ -304,20 +313,21 @@ function generateTextLinesArray() {
     return lines;
 }
 
-// DESCARGAR COMO TXT (Distribuido en 3 columnas)
+// DESCARGAR COMO TXT (Distribuido en 2 columnas para móviles, orden numérico preservado)
 function downloadTxt() {
     const lines = generateTextLinesArray();
-    const numRows = Math.ceil(lines.length / 3);
-    const textOutput = ["listado Frureina Anapoima", ""];
+    const dateStr = getFormattedDate();
+    const numRows = Math.ceil(lines.length / 2);
+    const textOutput = ["listado Frureina Anapoima", `Fecha: ${dateStr}`, ""];
     
     for (let row = 0; row < numRows; row++) {
         let rowStr = '';
-        for (let col = 0; col < 3; col++) {
+        for (let col = 0; col < 2; col++) {
             const idx = col * numRows + row;
             if (idx < lines.length) {
                 let text = lines[idx].text;
-                if (col < 2) {
-                    rowStr += text.padEnd(45, ' ');
+                if (col < 1) {
+                    rowStr += text.padEnd(50, ' ');
                 } else {
                     rowStr += text;
                 }
@@ -326,27 +336,35 @@ function downloadTxt() {
         textOutput.push(rowStr);
     }
     
-    const content = textOutput.join('\n');
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'lista_productos_1hoja.txt';
-    link.click();
-    URL.revokeObjectURL(link.href);
+    const content = textOutput.join('\r\n'); // \r\n para mejor compatibilidad con Notepad
+    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]); // UTF-8 BOM
+    const blob = new Blob([bom, content], { type: 'text/plain;charset=utf-8' });
+    triggerDownload(blob, 'lista_productos.txt');
 }
 
-// DESCARGAR PARA CELULARES (TXT en una sola columna vertical para compatibilidad universal)
-function downloadMobileFormat() {
-    const lines = generateTextLinesArray();
-    const textOutput = ["listado Frureina Anapoima", "", ...lines.map(item => item.text)];
-    
-    const content = textOutput.join('\n');
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+// Generar una descarga robusta para móviles
+function triggerDownload(blob, filename) {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'lista_para_celular.txt';
+    link.download = filename;
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(link.href);
+    setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    }, 100);
+}
+
+// DESCARGAR PARA CELULARES (TXT en una sola columna vertical)
+function downloadMobileFormat() {
+    const lines = generateTextLinesArray();
+    const dateStr = getFormattedDate();
+    const textOutput = ["listado Frureina Anapoima", `Fecha: ${dateStr}`, "", ...lines.map(item => item.text)];
+    
+    const content = textOutput.join('\r\n');
+    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]); // UTF-8 BOM
+    const blob = new Blob([bom, content], { type: 'text/plain;charset=utf-8' });
+    triggerDownload(blob, 'lista_celular.txt');
 }
 
 // DESCARGAR COMO PDF (usando jsPDF en una sola hoja, 3 columnas completas)
@@ -362,23 +380,22 @@ function downloadPdf() {
     
     // Una sola hoja que condensa las 190 items => 64 filas por columna.
     // Asumiendo un alto de página de A4: 297mm.
-    const numRows = Math.ceil(lines.length / 3); // 64
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const marginLeft = 10;
-    const colWidth = (pageWidth - 2 * marginLeft) / 3;
-    
-    // Título
+    // Título y Fecha
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.text("listado Frureina Anapoima", marginLeft, 10);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    const dateStr = getFormattedDate();
+    doc.text(`Fecha: ${dateStr}`, marginLeft, 14);
 
-    // Iniciar y = 18. Usaremos un espaciado reducido para asegurar que todos quepan en 1 hoja.
-    // 297 - 25 (márgenes) = 272mm para 64 filas => ~4.2mm cada fila.
-    const startY = 18;
+    // Iniciar y = 20.
+    const startY = 20;
     const lineHeight = 4.2; 
     
     doc.setFontSize(7);
-
+    
+    // El PDF mantiene 3 columnas para ahorrar espacio en papel A4
     for (let col = 0; col < 3; col++) {
         let y = startY;
         for (let row = 0; row < numRows; row++) {
@@ -398,7 +415,7 @@ function downloadPdf() {
         }
     }
 
-    doc.save('lista_productos_1hoja.pdf');
+    doc.save(`lista_frureina_${dateStr.replace(/\//g, '-')}.pdf`);
 }
 
 // -----------------------------------------------------------------
