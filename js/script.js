@@ -351,9 +351,11 @@ function downloadPdf() {
     });
 
     const lines = generateTextLinesArray();
+    const numRows = Math.ceil(lines.length / 3);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const marginLeft = 10;
+    const colWidth = (pageWidth - 2 * marginLeft) / 3;
     
-    // Una sola hoja que condensa las 190 items => 64 filas por columna.
-    // Asumiendo un alto de página de A4: 297mm.
     // Título y Fecha
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
